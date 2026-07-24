@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head><%- include('../partials/head') %></head>
+<body class="admin-body">
+<main class="login-wrap">
+  <form class="login-card" action="/admin/login" method="post">
+    <div class="brand center">
+      <svg class="brand-star" viewBox="0 0 32 32" aria-hidden="true"><polygon points="16,1 20,12 31,16 20,20 16,31 12,20 1,16 12,12"/></svg>
+      <span class="brand-name">Foundry Admin</span>
+    </div>
+    <% if (error) { %><p class="form-error"><%= error %></p><% } %>
+    <label>Nom d'utilisateur
+      <input name="username" required autocomplete="username">
+    </label>
+    <label>Mot de passe
+      <input name="password" type="password" required autocomplete="current-password">
+    </label>
+    <button class="btn btn-primary" type="submit">Se connecter</button>
+  </form>
+</main>
+</body>
+</html>

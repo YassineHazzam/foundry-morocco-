@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head><%- include('../partials/head') %></head>
+<body class="admin-body">
+<%- include('../partials/admin-nav') %>
+
+<main class="container admin-main">
+  <div class="admin-section-head">
+    <h1 class="page-title">Annonces</h1>
+    <a class="btn btn-primary" href="/admin/annonces/nouvelle">+ Nouvelle annonce</a>
+  </div>
+
+  <p class="filter-tabs">
+    <a href="/admin/annonces" class="<%= filter === 'toutes' ? 'active' : '' %>">Toutes</a>
+    <a href="/admin/annonces?statut=publie" class="<%= filter === 'publie' ? 'active' : '' %>">Publiées</a>
+    <a href="/admin/annonces?statut=en-attente" class="<%= filter === 'en-attente' ? 'active' : '' %>">En attente</a>
+    <a href="/admin/annonces?statut=rejete" class="<%= filter === 'rejete' ? 'active' : '' %>">Rejetées</a>
+  </p>
+
+  <table class="table">
+    <thead><tr><th>Annonce</th><th>Ville</th><th>Prix</th><th>Statut</th><th>Vues</th><th>Actions</th></tr></thead>
+    <tbody>
+    <% listings.forEach(l => { %>
+      <tr>
+        <td>
+          <a href="/admin/annonces/<%= l.id %>"><%= l.title %></a>
+          <% if (l.verified) { %><span class="badge badge-verified">✦</span><% } %>
+          <% if (l.featured) { %><span class="badge">★</span><% } %>
+        </td>
+        <td><%= l.city %> · <%= l.quartier %></td>
+        <td><%= fmtMAD(l.price) %></td>
+        <td><span class="status status-<%= l.status %>"><%= l.status %></span></td>
+        <td class="num"><%= l.views || 0 %></td>
+        <td class="actions">
+          <% if (l.status !== 'publie') { %><form action="/admin/annonces/<%= l.id %>/action" method="post"><button name="action" value="publier" class="btn btn-outline btn-sm">Publier</button></form><% } %>
+          <% if (!l.verified) { %><form action="/admin/annonces/<%= l.id %>/action" method="post"><button name="action" value="verifier" class="btn btn-primary btn-sm">✦</button></form>
+          <% } else { %><form action="/admin/annonces/<%= l.id %>/action" method="post"><button name="action" value="deverifier" class="btn btn-outline btn-sm">Retirer ✦</button></form><% } %>
+          <form action="/admin/annonces/<%= l.id %>/action" method="post" onsubmit="return confirm('Supprimer cette annonce ?')"><button name="action" value="supprimer" class="btn btn-danger btn-sm">Suppr.</button></form>
+        </td>
+      </tr>
+    <% }); %>
+    </tbody>
+  </table>
+</main>
+</body>
+</html>

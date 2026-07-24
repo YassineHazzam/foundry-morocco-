@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head><%- include('../partials/head') %></head>
+<body class="admin-body">
+<%- include('../partials/admin-nav') %>
+
+<main class="container admin-main">
+  <h1 class="page-title">Tableau de bord</h1>
+
+  <div class="stat-grid">
+    <div class="stat"><span class="stat-num"><%= stats.published %></span><span class="stat-label">Annonces publiées</span></div>
+    <div class="stat stat-warn"><span class="stat-num"><%= stats.pending %></span><span class="stat-label">En attente de modération</span></div>
+    <div class="stat"><span class="stat-num"><%= stats.verified %></span><span class="stat-label">✦ Vérifiées</span></div>
+    <div class="stat"><span class="stat-num"><%= stats.unreadLeads %></span><span class="stat-label">Leads non lus</span></div>
+    <div class="stat"><span class="stat-num"><%= stats.totalViews %></span><span class="stat-label">Vues totales</span></div>
+  </div>
+
+  <section class="admin-section">
+    <div class="admin-section-head">
+      <h2>File de modération</h2>
+      <a class="btn btn-outline btn-sm" href="/admin/annonces?statut=en-attente">Tout voir</a>
+    </div>
+    <% if (pendingListings.length) { %>
+    <table class="table">
+      <thead><tr><th>Annonce</th><th>Ville</th><th>Prix</th><th>Contact</th><th>Actions</th></tr></thead>
+      <tbody>
+      <% pendingListings.forEach(l => { %>
+        <tr>
+          <td><a href="/admin/annonces/<%= l.id %>"><%= l.title %></a></td>
+          <td><%= l.city %> · <%= l.quartier %></td>
+          <td><%= fmtMAD(l.price) %></td>
+          <td><%= l.contactName %><br><small><%= l.contactPhone %></small></td>
+          <td class="actions">
+            <form action="/admin/annonces/<%= l.id %>/action" method="post"><button name="action" value="verifier" class="btn btn-primary btn-sm">✦ Vérifier & publier</button></form>
+            <form action="/admin/annonces/<%= l.id %>/action" method="post"><button name="action" value="publier" class="btn btn-outline btn-sm">Publier</button></form>
+            <form action="/admin/annonces/<%= l.id %>/action" method="post"><button name="action" value="rejeter" class="btn btn-danger btn-sm">Rejeter</button></form>
+          </td>
+        </tr>
+      <% }); %>
+      </tbody>
+    </table>
+    <% } else { %><p class="muted">Aucune annonce en attente. ✓</p><% } %>
+  </section>
+
+  <div class="admin-two-col">
+    <section class="admin-section">
+      <h2>Top annonces (vues)</h2>
+      <table class="table">
+        <tbody>
+        <% topListings.forEach(l => { %>
+          <tr><td><a href="/admin/annonces/<%= l.id %>"><%= l.title %></a></td><td class="num"><%= l.views || 0 %> vues</td></tr>
+        <% }); %>
+        </tbody>
+      </table>
+    </section>
+    <section class="admin-section">
+      <h2>Derniers leads</h2>
+      <table class="table">
+        <tbody>
+        <% if (recentLeads.length) { recentLeads.forEach(ld => { %>
+          <tr><td><strong><%= ld.nom %></strong><br><small><%= ld.listingTitle %></small></td><td class="num"><%= ld.telephone %></td></tr>
+        <% }); } else { %><tr><td class="muted">Aucun lead pour l'instant.</td></tr><% } %>
+        </tbody>
+      </table>
+    </section>
+  </div>
+</main>
+</body>
+</html>

@@ -1,0 +1,21 @@
+<article class="card" data-id="<%= l.id %>" data-lat="<%= l.lat %>" data-lng="<%= l.lng %>" data-price="<%= fmtMAD(l.price) %>" data-title="<%= l.title %>" data-url="/annonce/<%= l.slug %>">
+  <a class="card-media" href="/annonce/<%= l.slug %>">
+    <% if (l.photos && l.photos.length) { %>
+      <img src="<%= l.photos[0] %>" alt="<%= l.title %>" loading="lazy">
+    <% } else { %>
+      <div class="card-media-empty"><svg viewBox="0 0 32 32" aria-hidden="true"><polygon points="16,1 20,12 31,16 20,20 16,31 12,20 1,16 12,12"/></svg></div>
+    <% } %>
+    <div class="card-badges">
+      <% if (l.verified) { %><span class="badge badge-verified">✦ Vérifié</span><% } %>
+      <% if (l.priceDrop) { %><span class="badge badge-drop">Prix en baisse</span><% } %>
+    </div>
+  </a>
+  <div class="card-body">
+    <p class="card-price"><%= fmtMAD(l.price) %></p>
+    <h3 class="card-title"><a href="/annonce/<%= l.slug %>"><%= l.title %></a></h3>
+    <p class="card-meta">
+      <% if (l.beds) { %><%= l.beds %> ch · <% } %><% if (l.baths) { %><%= l.baths %> sdb · <% } %><%= l.surface %> m²
+    </p>
+    <p class="card-loc"><%= l.quartier %>, <%= l.city.charAt(0).toUpperCase() + l.city.slice(1) %></p>
+  </div>
+</article>

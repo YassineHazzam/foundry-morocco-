@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head><%- include('../partials/head') %></head>
+<body class="admin-body">
+<%- include('../partials/admin-nav') %>
+
+<main class="container admin-main narrow">
+  <h1 class="page-title"><%= listing ? 'Modifier l\'annonce' : 'Nouvelle annonce' %></h1>
+  <% const v = listing || {}; %>
+  <form class="stack-form" action="/admin/annonces/save" method="post">
+    <input type="hidden" name="id" value="<%= v.id || '' %>">
+
+    <fieldset>
+      <legend>Bien</legend>
+      <input name="titre" placeholder="Titre" required maxlength="120" value="<%= v.title || '' %>">
+      <input name="slug" placeholder="Slug URL (auto si vide)" value="<%= v.slug || '' %>">
+      <div class="form-row">
+        <select name="type">
+          <% types.forEach(t => { %><option value="<%= t.slug %>" <%= v.type === t.slug ? 'selected' : '' %>><%= t.label %></option><% }); %>
+        </select>
+        <select name="city">
+          <% cities.forEach(c => { %><option value="<%= c.slug %>" <%= v.city === c.slug ? 'selected' : '' %>><%= c.name %></option><% }); %>
+        </select>
+        <input name="quartier" placeholder="Quartier" value="<%= v.quartier || '' %>">
+      </div>
+      <div class="form-row">
+        <input name="prix" type="number" placeholder="Prix (MAD)" required value="<%= v.price || '' %>">
+        <input name="surface" type="number" placeholder="Surface m²" value="<%= v.surface || '' %>">
+        <input name="chambres" type="number" placeholder="Chambres" value="<%= v.beds || '' %>">
+        <input name="sdb" type="number" placeholder="SDB" value="<%= v.baths || '' %>">
+      </div>
+      <div class="form-row">
+        <input name="etage" type="number" placeholder="Étage" value="<%= v.etage != null ? v.etage : '' %>">
+        <input name="annee" type="number" placeholder="Année construction" value="<%= v.anneeConstruction || '' %>">
+        <select name="titreFoncier">
+          <% titres.forEach(t => { %><option <%= v.titreFoncier === t ? 'selected' : '' %>><%= t %></option><% }); %>
+        </select>
+        <select name="standing">
+          <% ['Économique','Moyen standing','Haut standing'].forEach(s => { %><option <%= v.standing === s ? 'selected' : '' %>><%= s %></option><% }); %>
+        </select>
+      </div>
+      <div class="form-row">
+        <input name="lat" placeholder="Latitude" value="<%= v.lat || '' %>">
+        <input name="lng" placeholder="Longitude" value="<%= v.lng || '' %>">
+      </div>
+      <label class="check"><input type="checkbox" name="ascenseur" <%= v.ascenseur ? 'checked' : '' %>> Ascenseur</label>
+      <textarea name="description" rows="6" placeholder="Description"><%= v.description || '' %></textarea>
+      <textarea name="photos" rows="3" placeholder="URLs des photos — une par ligne"><%= (v.photos || []).join('\n') %></textarea>
+      <input name="amenities" placeholder="Équipements séparés par des virgules" value="<%= (v.amenities || []).join(', ') %>">
+    </fieldset>
+
+    <fieldset>
+      <legend>Vendeur</legend>
+      <div class="form-row">
+        <input name="contactName" placeholder="Nom du contact" value="<%= v.contactName || '' %>">
+        <input name="contactPhone" placeholder="Téléphone" value="<%= v.contactPhone || '' %>">
+        <input name="whatsapp" placeholder="WhatsApp (2126XXXXXXXX)" value="<%= v.whatsapp || '' %>">
+      </div>
+      <label class="check"><input type="radio" name="ownerType" value="particulier" <%= v.ownerType !== 'agence' ? 'checked' : '' %>> Particulier</label>
+      <label class="check"><input type="radio" name="ownerType" value="agence" <%= v.ownerType === 'agence' ? 'checked' : '' %>> Agence</label>
+    </fieldset>
+
+    <fieldset>
+      <legend>Publication</legend>
+      <select name="status">
+        <option value="en-attente" <%= v.status === 'en-attente' ? 'selected' : '' %>>En attente</option>
+        <option value="publie" <%= v.status === 'publie' ? 'selected' : '' %>>Publiée</option>
+        <option value="rejete" <%= v.status === 'rejete' ? 'selected' : '' %>>Rejetée</option>
+      </select>
+      <label class="check"><input type="checkbox" name="verified" <%= v.verified ? 'checked' : '' %>> ✦ Vérifié Foundry</label>
+      <label class="check"><input type="checkbox" name="featured" <%= v.featured ? 'checked' : '' %>> ★ Sélection (page d'accueil)</label>
+      <label class="check"><input type="checkbox" name="priceDrop" <%= v.priceDrop ? 'checked' : '' %>> Prix en baisse</label>
+    </fieldset>
+
+    <button class="btn btn-primary" type="submit">Enregistrer</button>
+  </form>
+</main>
+</body>
+</html>

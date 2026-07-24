@@ -1,0 +1,26 @@
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-seo">
+      <h2 class="footer-seo-title">Immobilier à vendre au Maroc</h2>
+      <div class="footer-seo-grid">
+        <% const seoCities = [
+          {slug:'casablanca',name:'Casablanca'},{slug:'rabat',name:'Rabat'},{slug:'marrakech',name:'Marrakech'},
+          {slug:'agadir',name:'Agadir'},{slug:'tanger',name:'Tanger'},{slug:'fes',name:'Fès'}
+        ]; %>
+        <% seoCities.forEach(c => { %>
+          <div class="footer-seo-col">
+            <a class="footer-seo-city" href="/ville/<%= c.slug %>"><%= c.name %></a>
+            <a href="/<%= c.slug %>/appartement-a-vendre">Appartements à vendre</a>
+            <a href="/<%= c.slug %>/villa-a-vendre">Villas à vendre</a>
+            <a href="/<%= c.slug %>/terrain-a-vendre">Terrains à vendre</a>
+            <a href="/<%= c.slug %>/studio-a-vendre">Studios à vendre</a>
+          </div>
+        <% }); %>
+      </div>
+    </div>
+    <div class="footer-base">
+      <p>© <%= new Date().getFullYear() %> Foundry. Plateforme immobilière marocaine — annonces vérifiées.</p>
+      <p class="footer-links"><a href="/sitemap.xml">Plan du site</a> · <a href="/vendre">Vendre un bien</a> · <a href="/admin/login">Espace admin</a></p>
+    </div>
+  </div>
+</footer>

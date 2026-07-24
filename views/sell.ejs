@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head><%- include('partials/head') %></head>
+<body>
+<%- include('partials/header') %>
+
+<main class="container narrow">
+  <h1 class="page-title">Vendre votre bien avec Foundry</h1>
+  <p class="page-lede">Déposez votre annonce gratuitement. Notre équipe la vérifie (identité, titre foncier, photos) avant publication — c'est ce qui donne confiance aux acheteurs.</p>
+
+  <% if (sent) { %>
+    <div class="notice-ok">
+      <p><strong>Annonce reçue.</strong> Elle est en cours de vérification par l'équipe Foundry et sera publiée sous 24 h ouvrées. Nous vous appellerons si un document est nécessaire.</p>
+      <a class="btn btn-outline" href="/">Retour à l'accueil</a>
+    </div>
+  <% } else { %>
+  <form class="stack-form" action="/vendre" method="post">
+    <fieldset>
+      <legend>Le bien</legend>
+      <input name="titre" placeholder="Titre de l'annonce (ex : Appartement 3 chambres — Maarif)" required maxlength="120">
+      <div class="form-row">
+        <select name="type" required>
+          <% types.forEach(t => { %><option value="<%= t.slug %>"><%= t.label %></option><% }); %>
+        </select>
+        <select name="city" required>
+          <% cities.forEach(c => { %><option value="<%= c.slug %>"><%= c.name %></option><% }); %>
+        </select>
+        <input name="quartier" placeholder="Quartier" maxlength="60">
+      </div>
+      <div class="form-row">
+        <input name="prix" type="number" placeholder="Prix (MAD)" required min="0">
+        <input name="surface" type="number" placeholder="Surface (m²)" min="0">
+        <input name="chambres" type="number" placeholder="Chambres" min="0">
+        <input name="sdb" type="number" placeholder="Salles de bain" min="0">
+      </div>
+      <select name="titreFoncier">
+        <option>Titré</option><option>Non titré</option><option>En cours de titrement</option>
+      </select>
+      <textarea name="description" rows="5" placeholder="Décrivez votre bien…" maxlength="2000"></textarea>
+    </fieldset>
+    <fieldset>
+      <legend>Vos coordonnées</legend>
+      <div class="form-row">
+        <input name="nom" placeholder="Votre nom" required maxlength="100">
+        <input name="telephone" placeholder="Téléphone" required maxlength="30">
+        <input name="whatsapp" placeholder="WhatsApp (ex : 2126XXXXXXXX)" maxlength="20">
+      </div>
+      <label class="check"><input type="radio" name="proprietaire" value="particulier" checked> Particulier</label>
+      <label class="check"><input type="radio" name="proprietaire" value="agence"> Agence</label>
+    </fieldset>
+    <button class="btn btn-primary" type="submit">Envoyer pour vérification</button>
+  </form>
+  <% } %>
+</main>
+
+<%- include('partials/footer') %>
+</body>
+</html>

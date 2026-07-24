@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head><%- include('../partials/head') %></head>
+<body class="admin-body">
+<%- include('../partials/admin-nav') %>
+
+<main class="container admin-main">
+  <h1 class="page-title">Leads acheteurs</h1>
+  <% if (leads.length) { %>
+  <table class="table">
+    <thead><tr><th>Date</th><th>Contact</th><th>Annonce</th><th>Message</th><th></th></tr></thead>
+    <tbody>
+    <% leads.forEach(ld => { %>
+      <tr class="<%= ld.read ? '' : 'row-unread' %>">
+        <td><small><%= new Date(ld.createdAt).toLocaleString('fr-FR') %></small></td>
+        <td><strong><%= ld.nom %></strong><br><a href="tel:<%= ld.telephone %>"><%= ld.telephone %></a><% if (ld.email) { %><br><small><%= ld.email %></small><% } %></td>
+        <td><%= ld.listingTitle %></td>
+        <td><small><%= ld.message %></small></td>
+        <td><% if (!ld.read) { %><form action="/admin/leads/<%= ld.id %>/lu" method="post"><button class="btn btn-outline btn-sm">Marquer lu</button></form><% } %></td>
+      </tr>
+    <% }); %>
+    </tbody>
+  </table>
+  <% } else { %><p class="muted">Aucun lead pour l'instant.</p><% } %>
+</main>
+</body>
+</html>

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head><%- include('partials/head') %></head>
+<body>
+<%- include('partials/header') %>
+
+<section class="hero">
+  <div class="hero-zellige" aria-hidden="true"></div>
+  <div class="container hero-inner">
+    <p class="eyebrow">Plateforme immobilière marocaine</p>
+    <h1 class="hero-title">Achetez en confiance.<br>Chaque annonce, vérifiée.</h1>
+    <form class="hero-search" action="/recherche" method="get">
+      <select name="city" aria-label="Ville">
+        <option value="">Toutes les villes</option>
+        <% cities.forEach(c => { %><option value="<%= c.slug %>"><%= c.name %></option><% }); %>
+      </select>
+      <select name="type" aria-label="Type de bien">
+        <option value="">Tous les biens</option>
+        <% types.forEach(t => { %><option value="<%= t.slug %>"><%= t.label %></option><% }); %>
+      </select>
+      <select name="prixMax" aria-label="Budget maximum">
+        <option value="">Budget max</option>
+        <option value="800000">800 000 MAD</option>
+        <option value="1500000">1 500 000 MAD</option>
+        <option value="3000000">3 000 000 MAD</option>
+        <option value="6000000">6 000 000 MAD</option>
+        <option value="15000000">15 000 000 MAD</option>
+      </select>
+      <button class="btn btn-primary" type="submit">Rechercher</button>
+    </form>
+    <p class="hero-note"><%= countPublished %> biens à vendre · Titre foncier contrôlé · Contact WhatsApp direct</p>
+  </div>
+</section>
+
+<% function carousel(label, items) { %>
+  <% if (items.length) { %>
+  <section class="section">
+    <div class="container">
+      <h2 class="section-title"><%= label %></h2>
+      <div class="card-grid">
+        <% items.forEach(l => { %><%- include('partials/card', { l, fmtMAD }) %><% }); %>
+      </div>
+    </div>
+  </section>
+  <% } %>
+<% } %>
+
+<% carousel('Sélection Foundry', featured) %>
+<% carousel('Prix en baisse', priceDrops) %>
+<% carousel('Dernières annonces', recent) %>
+
+<section class="section section-cities">
+  <div class="container">
+    <h2 class="section-title">Explorer par ville</h2>
+    <div class="city-grid">
+      <% cities.forEach(c => { %>
+        <a class="city-tile" href="/ville/<%= c.slug %>">
+          <span class="city-name"><%= c.name %></span>
+          <span class="city-quartiers"><%= c.quartiers.slice(0,3).join(' · ') %></span>
+        </a>
+      <% }); %>
+    </div>
+  </div>
+</section>
+
+<section class="section section-trust">
+  <div class="container trust-inner">
+    <div>
+      <h2 class="section-title">Le badge <span class="verified-inline">✦ Vérifié Foundry</span></h2>
+      <p>Chaque annonce vérifiée passe par notre équipe : identité du vendeur confirmée, statut du titre foncier contrôlé, photos authentifiées. Fini les fausses annonces et le spam de samsars.</p>
+    </div>
+    <a class="btn btn-primary" href="/vendre">Faire vérifier mon bien</a>
+  </div>
+</section>
+
+<%- include('partials/footer') %>
+</body>
+</html>

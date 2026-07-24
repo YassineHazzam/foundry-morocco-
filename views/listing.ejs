@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head><%- include('partials/head') %></head>
+<body>
+<%- include('partials/header') %>
+
+<main class="container listing-page">
+  <nav class="crumbs" aria-label="Fil d'ariane">
+    <a href="/">Accueil</a> › <a href="/ville/<%= listing.city %>"><%= city ? city.name : listing.city %></a> ›
+    <a href="/<%= listing.city %>/<%= listing.type %>-a-vendre"><%= type ? type.plural : listing.type %></a> › <span><%= listing.title %></span>
+  </nav>
+
+  <% if (listing.photos && listing.photos.length) { %>
+  <div class="gallery">
+    <img class="gallery-main" src="<%= listing.photos[0] %>" alt="<%= listing.title %>">
+    <% if (listing.photos.length > 1) { %>
+    <div class="gallery-thumbs">
+      <% listing.photos.slice(1, 5).forEach(p => { %><img src="<%= p %>" alt="" loading="lazy"><% }); %>
+    </div>
+    <% } %>
+  </div>
+  <% } %>
+
+  <div class="listing-cols">
+    <div class="listing-main">
+      <div class="listing-head">
+        <div>
+          <h1 class="listing-title"><%= listing.title %></h1>
+          <p class="listing-loc"><%= listing.quartier %> · <%= city ? city.name : listing.city %></p>
+        </div>
+        <div class="listing-price-block">
+          <p class="listing-price"><%= fmtMAD(listing.price) %></p>
+          <% if (listing.verified) { %><span class="badge badge-verified">✦ Vérifié Foundry</span><% } %>
+        </div>
+      </div>
+
+      <ul class="facts">
+        <% if (listing.beds) { %><li><strong><%= listing.beds %></strong> chambres</li><% } %>
+        <% if (listing.baths) { %><li><strong><%= listing.baths %></strong> salles de bain</li><% } %>
+        <li><strong><%= listing.surface %></strong> m²</li>
+        <% if (listing.etage !== null && listing.etage !== undefined) { %><li>Étage <strong><%= listing.etage %></strong><%= listing.ascenseur ? ' · ascenseur' : '' %></li><% } %>
+        <li>Titre foncier : <strong><%= listing.titreFoncier %></strong></li>
+        <% if (listing.anneeConstruction) { %><li>Construit en <strong><%= listing.anneeConstruction %></strong></li><% } %>
+        <li><strong><%= listing.ownerType === 'agence' ? 'Agence' : 'Particulier' %></strong></li>
+      </ul>
+
+      <section class="listing-desc">
+        <h2>Description</h2>
+        <p><%= listing.description %></p>
+      </section>
+
+      <% if (listing.amenities && listing.amenities.length) { %>
+      <section class="listing-desc">
+        <h2>Équipements</h2>
+        <ul class="amenities">
+          <% listing.amenities.forEach(a => { %><li><%= a %></li><% }); %>
+        </ul>
+      </section>
+      <% } %>
+    </div>
+
+    <aside class="listing-side" id="contact">
+      <div class="contact-card">
+        <p class="contact-name"><%= listing.contactName %></p>
+        <% if (listing.whatsapp) { %>
+        <a class="btn btn-whatsapp" href="https://wa.me/<%= listing.whatsapp %>?text=<%= encodeURIComponent('Bonjour, je suis intéressé par votre annonce « ' + listing.title + ' » sur Foundry.') %>" target="_blank" rel="noopener">
+          Contacter sur WhatsApp
+        </a>
+        <% } %>
+        <a class="btn btn-outline" href="tel:<%= listing.contactPhone.replace(/\s/g,'') %>"><%= listing.contactPhone %></a>
+
+        <% if (lead) { %>
+          <p class="lead-ok">Message envoyé — le vendeur vous recontactera rapidement.</p>
+        <% } else { %>
+        <form class="lead-form" action="/annonce/<%= listing.slug %>/contact" method="post">
+          <h3>Demander une visite</h3>
+          <input name="nom" placeholder="Votre nom" required maxlength="100">
+          <input name="telephone" placeholder="Votre téléphone" required maxlength="30">
+          <input name="email" type="email" placeholder="Email (optionnel)" maxlength="120">
+          <textarea name="message" rows="3" placeholder="Je souhaite visiter ce bien…" maxlength="1000"></textarea>
+          <button class="btn btn-primary" type="submit">Envoyer la demande</button>
+        </form>
+        <% } %>
+      </div>
+    </aside>
+  </div>
+
+  <% if (similar.length) { %>
+  <section class="section">
+    <h2 class="section-title">Biens similaires</h2>
+    <div class="card-grid">
+      <% similar.forEach(l => { %><%- include('partials/card', { l, fmtMAD }) %><% }); %>
+    </div>
+  </section>
+  <% } %>
+</main>
+
+<%- include('partials/footer') %>
+</body>
+</html>

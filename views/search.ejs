@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<%- include('partials/head') %>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
+</head>
+<body class="page-search">
+<%- include('partials/header') %>
+
+<div class="filters-bar">
+  <form class="container filters-form" action="<%= canonicalPath %>" method="get">
+    <% if (canonicalPath === '/recherche') { %>
+    <select name="city">
+      <option value="">Toutes les villes</option>
+      <% cities.forEach(c => { %><option value="<%= c.slug %>" <%= q.city === c.slug ? 'selected' : '' %>><%= c.name %></option><% }); %>
+    </select>
+    <select name="type">
+      <option value="">Tous les biens</option>
+      <% types.forEach(t => { %><option value="<%= t.slug %>" <%= q.type === t.slug ? 'selected' : '' %>><%= t.label %></option><% }); %>
+    </select>
+    <% } %>
+    <% if (city) { %>
+    <select name="quartier">
+      <option value="">Tous les quartiers</option>
+      <% city.quartiers.forEach(qt => { %><option value="<%= qt %>" <%= q.quartier === qt ? 'selected' : '' %>><%= qt %></option><% }); %>
+    </select>
+    <% } %>
+    <input type="number" name="prixMin" placeholder="Prix min (MAD)" value="<%= q.prixMin || '' %>">
+    <input type="number" name="prixMax" placeholder="Prix max (MAD)" value="<%= q.prixMax || '' %>">
+    <select name="chambresMin">
+      <option value="">Chambres</option>
+      <% [1,2,3,4,5].forEach(n => { %><option value="<%= n %>" <%= q.chambresMin == n ? 'selected' : '' %>><%= n %>+ ch</option><% }); %>
+    </select>
+    <select name="proprietaire">
+      <option value="">Particulier & agence</option>
+      <option value="particulier" <%= q.proprietaire === 'particulier' ? 'selected' : '' %>>Particulier</option>
+      <option value="agence" <%= q.proprietaire === 'agence' ? 'selected' : '' %>>Agence</option>
+    </select>
+    <label class="check"><input type="checkbox" name="titre" value="titre" <%= q.titre === 'titre' ? 'checked' : '' %>> Titré</label>
+    <label class="check"><input type="checkbox" name="verifie" value="1" <%= q.verifie === '1' ? 'checked' : '' %>> ✦ Vérifié</label>
+    <select name="tri">
+      <option value="pertinence" <%= (q.tri || 'pertinence') === 'pertinence' ? 'selected' : '' %>>Pertinence</option>
+      <option value="prix-asc" <%= q.tri === 'prix-asc' ? 'selected' : '' %>>Prix croissant</option>
+      <option value="prix-desc" <%= q.tri === 'prix-desc' ? 'selected' : '' %>>Prix décroissant</option>
+      <option value="recent" <%= q.tri === 'recent' ? 'selected' : '' %>>Plus récent</option>
+    </select>
+    <button class="btn btn-primary btn-sm" type="submit">Filtrer</button>
+  </form>
+</div>
+
+<div class="split">
+  <div class="split-list">
+    <div class="split-list-head">
+      <h1 class="split-heading"><%= heading %></h1>
+      <p class="split-count"><%= results.length %> annonce<%= results.length > 1 ? 's' : '' %></p>
+    </div>
+    <% if (results.length) { %>
+      <div class="card-grid card-grid-list">
+        <% results.forEach(l => { %><%- include('partials/card', { l, fmtMAD }) %><% }); %>
+      </div>
+    <% } else { %>
+      <div class="empty">
+        <p>Aucun bien ne correspond à ces critères.</p>
+        <a class="btn btn-outline" href="<%= canonicalPath %>">Réinitialiser les filtres</a>
+      </div>
+    <% } %>
+    <% if (city) { %>
+    <div class="quartier-links">
+      <h2>Quartiers de <%= city.name %></h2>
+      <p><% city.quartiers.forEach(qt => { %><a href="<%= canonicalPath %>?quartier=<%= encodeURIComponent(qt) %>"><%= qt %></a> <% }); %></p>
+    </div>
+    <% } %>
+  </div>
+  <div class="split-map">
+    <div id="map" data-center-lat="<%= city ? city.lat : 31.7917 %>" data-center-lng="<%= city ? city.lng : -7.0926 %>" data-zoom="<%= city ? 12 : 6 %>"></div>
+  </div>
+</div>
+
+<%- include('partials/footer') %>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+<script src="/js/map.js"></script>
+</body>
+</html>
